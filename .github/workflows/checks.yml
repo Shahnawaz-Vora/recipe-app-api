@@ -17,6 +17,11 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
       - name: Start services
         run: docker-compose up -d  # Ensure services are up
 
@@ -24,10 +29,10 @@ jobs:
         run: docker-compose run --rm app sh -c "which python && python --version && which flake8"
 
       - name: Test
-        run: docker-compose run --rm app sh -c "python manage.py test"
+        run: docker-compose run --rm app sh -c "/py/bin/python manage.py test"
 
       - name: Lint
-        run: docker-compose run --rm app sh -c "flake8"
+        run: docker-compose run --rm app sh -c "/py/bin/flake8"
 
       - name: Cleanup
         run: docker-compose down
