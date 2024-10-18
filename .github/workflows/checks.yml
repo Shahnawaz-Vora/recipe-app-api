@@ -6,16 +6,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Login to Docker Hub
-        uses: docker/login-action@v3  # Updated to v3 for Node 20 support
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       
       - name: Checkout
-        uses: actions/checkout@v4  # Updated to v4 for Node 20 support
+        uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3  # Updated to v3 for Node 20 support
+        uses: docker/setup-buildx-action@v3
+
+      - name: Start services
+        run: docker-compose up -d  # Ensure services are up
+
+      - name: Debug Python and Flake8
+        run: docker-compose run --rm app sh -c "which python && python --version && which flake8"
 
       - name: Test
         run: docker-compose run --rm app sh -c "python manage.py test"
