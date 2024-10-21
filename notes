@@ -8,7 +8,7 @@ docker-compose run --rm app sh -c "django-admin startproject app ."
 
 Test:
 django test framework built on unittest library of python
-we can write test in tests.py or create tests/ subdirectory in app folder 
+we can write test in tests.py or create tests/ subdirectory in app folder
 test modules must start with test_
 Test directories must contains __init__.py
 Django provide specific db for test
@@ -20,3 +20,13 @@ docker-compose up
 docker-compose down
 
 docker-compose run --rm app sh -c "python manage.py startapp core"
+
+docker-compose run --rm app sh -c "python manage.py makemigrations"
+
+docker-compose run --rm app sh -c "python manage.py migrate"
+
+if we use mocking
+docker-compose run --rm app sh -c "python manage.py wait_for_db && python manage.py migrate"
+
+docker volume ls
+docker volume rm recipe-app-api_dev-db-data
