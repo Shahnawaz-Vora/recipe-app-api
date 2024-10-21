@@ -1,12 +1,15 @@
 from django.contrib import admin  # noqa
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
+
 # Register your models here.
 from core import models
+
+
 class UserAdmin(BaseUserAdmin):
     """Define the admin page for users"""
     ordering = ['id']
-    list_display = ['email','name']
+    list_display = ['email', 'name']
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         (
@@ -36,8 +39,8 @@ class UserAdmin(BaseUserAdmin):
         }),
     )
 
+
 admin.site.register(models.User, UserAdmin)
 admin.site.register(models.Recipe)
 admin.site.register(models.Tag)
 admin.site.register(models.Ingredient)
-

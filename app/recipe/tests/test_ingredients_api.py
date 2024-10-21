@@ -1,5 +1,5 @@
 """
-Test for the ingredients api
+Test for the ingredients API
 """
 from decimal import Decimal
 
@@ -10,38 +10,44 @@ from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import Ingredient , Recipe
+from core.models import Ingredient, Recipe
 
 from recipe.serializers import IngredientSerializer
 
 INGREDIENTS_URL = reverse('recipe:ingredient-list')
 
-def create_user(email='user@example.com', password= 'testpass@123'):
+
+def create_user(email='user@example.com', password='testpass@123'):
     """Create and return new user"""
-    return get_user_model().objects.create_user(email,password)
+    return get_user_model().objects.create_user(email, password)
+
 
 def detail_url(ingredient_id):
-    """Create and return a ingredient detail URL"""
+    """Create and return an ingredient detail URL"""
     return reverse('recipe:ingredient-detail', args=[ingredient_id])
 
+
 class PublicIngredientsApiTests(TestCase):
-    """Tests unauthenticated api requests"""
+    """Tests unauthenticated API requests"""
+
     def setUp(self):
         self.client = APIClient()
 
     def test_auth_required(self):
-        """Test auth is required to call api"""
+        """Test auth is required to call API"""
         res = self.client.get(INGREDIENTS_URL)
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
+
 class PrivateIngredientsApiTests(TestCase):
     """Test authenticated API requests"""
+
     def setUp(self):
         self.user = create_user()
         self.client = APIClient()
         self.client.force_authenticate(self.user)
 
-    def test_retrive_ingredients(self):
+    def test_retrieve_ingredients(self):
         """Test retrieving a list of ingredients"""
         Ingredient.objects.create(user=self.user, name="Kale")
         Ingredient.objects.create(user=self.user, name="Vanilla")
@@ -63,7 +69,7 @@ class PrivateIngredientsApiTests(TestCase):
         self.assertEqual(res.data[0]['id'], ingredient.id)
 
     def test_update_ingredient(self):
-        """Test updating of a ingredient"""
+        """Test updating an ingredient"""
         ingredient = Ingredient.objects.create(user=self.user, name="Cilantro")
         payload = {'name': 'Coriander'}
         url = detail_url(ingredient.id)
@@ -74,7 +80,7 @@ class PrivateIngredientsApiTests(TestCase):
         self.assertEqual(ingredient.name, payload['name'])
 
     def test_delete_ingredient(self):
-        """Test deleting ingredient succesful"""
+        """Test deleting an ingredient successfully"""
         ingredient = Ingredient.objects.create(user=self.user, name="Lettuce")
         url = detail_url(ingredient.id)
         res = self.client.delete(url)
@@ -96,15 +102,15 @@ class PrivateIngredientsApiTests(TestCase):
 
         s1 = IngredientSerializer(in1)
         s2 = IngredientSerializer(in2)
-        self.assertIn(s1.data,res.data)
-        self.assertNotIn(s2.data,res.data)
+        self.assertIn(s1.data, res.data)
+        self.assertNotIn(s2.data, res.data)
 
     def test_filtered_ingredients_unique(self):
         """Test filtered ingredients return a unique list"""
         ingredient = Ingredient.objects.create(user=self.user, name="Eggs")
         Ingredient.objects.create(user=self.user, name="Lentils")
         recipe1 = Recipe.objects.create(
-            title='Egg Bendict',
+            title='Egg Benedict',
             time_minutes=5,
             price=Decimal('7.50'),
             user=self.user,

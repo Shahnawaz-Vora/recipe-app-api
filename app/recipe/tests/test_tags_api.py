@@ -9,15 +9,17 @@ from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import Tag , Recipe
+from core.models import Tag, Recipe
 
 from recipe.serializers import TagSerializer
 
 TAGS_URL = reverse('recipe:tag-list')
 
-def create_user(email='user@example.com', password= 'testpass@123'):
+
+def create_user(email='user@example.com', password='testpass@123'):
     """Create and return new user"""
-    return get_user_model().objects.create_user(email,password)
+    return get_user_model().objects.create_user(email, password)
+
 
 def detail_url(tag_id):
     """Create and return a tag detail URL"""
@@ -33,6 +35,7 @@ class PublicTagsApiTests(TestCase):
         """Test auth is required to call api"""
         res = self.client.get(TAGS_URL)
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+
 
 class PrivateTagsApiTests(TestCase):
     """Test authenticated API requests"""
@@ -96,8 +99,8 @@ class PrivateTagsApiTests(TestCase):
 
         s1 = TagSerializer(tag1)
         s2 = TagSerializer(tag2)
-        self.assertIn(s1.data,res.data)
-        self.assertNotIn(s2.data,res.data)
+        self.assertIn(s1.data, res.data)
+        self.assertNotIn(s2.data, res.data)
 
     def test_filtered_tags_unique(self):
         """Test filtered tags return a unique list"""

@@ -7,9 +7,11 @@ from django.contrib.auth import get_user_model
 from core import models
 from unittest.mock import patch
 
-def create_user(email='user@example.com', password= 'testpass@123'):
+
+def create_user(email='user@example.com', password='testpass@123'):
     """Create and return new user"""
-    return get_user_model().objects.create_user(email,password)
+    return get_user_model().objects.create_user(email, password)
+
 
 class ModelTests(TestCase):
     """Test models"""
@@ -22,7 +24,7 @@ class ModelTests(TestCase):
             email=email,
             password=password,
         )
-        self.assertEqual(user.email,email)
+        self.assertEqual(user.email, email)
         self.assertTrue(user.check_password(password))
 
     def test_new_user_email_normalized(self):
@@ -34,13 +36,13 @@ class ModelTests(TestCase):
             ['test4@example.COM', 'test4@example.com'],
         ]
         for email, expected in sample_emails:
-            user = get_user_model().objects.create_user(email,'sample123')
-            self.assertEqual(user.email,expected)
+            user = get_user_model().objects.create_user(email, 'sample123')
+            self.assertEqual(user.email, expected)
 
     def test_new_user_without_email_raises_error(self):
-        """Test that creating user without email"""
+        """Test that creating user without email raises error"""
         with self.assertRaises(ValueError):
-            get_user_model().objects.create_user('','test123')
+            get_user_model().objects.create_user('', 'test123')
 
     def test_create_superuser(self):
         """Testing creating superuser"""
@@ -73,9 +75,12 @@ class ModelTests(TestCase):
         self.assertEqual(str(tag), tag.name)
 
     def test_create_ingredient(self):
-        """Test creating a ingredient is successful"""
+        """Test creating an ingredient is successful"""
         user = create_user()
-        ingredient = models.Ingredient.objects.create(user=user, name='Ingredient1')
+        ingredient = models.Ingredient.objects.create(
+            user=user,
+            name='Ingredient1'
+        )
         self.assertEqual(str(ingredient), ingredient.name)
 
     @patch('core.models.uuid.uuid4')

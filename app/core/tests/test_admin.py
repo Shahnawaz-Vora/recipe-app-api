@@ -1,5 +1,5 @@
 """Test django admin modifications."""
-from django.test import TestCase , Client
+from django.test import TestCase, Client
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
@@ -23,7 +23,8 @@ class AdminSiteTests(TestCase):
 
     def test_user_list(self):
         """Test that users are listed on page"""
-        url = reverse('admin:core_user_changelist') #this are define in django reverse url documentation
+        # This is defined in Django reverse URL documentation
+        url = reverse('admin:core_user_changelist')
         res = self.client.get(url)
 
         self.assertContains(res, self.user.name)
@@ -31,12 +32,12 @@ class AdminSiteTests(TestCase):
 
     def test_edit_user_page(self):
         """Test the edit user page works"""
-        url = reverse('admin:core_user_change',args=[self.user.id])
+        url = reverse('admin:core_user_change', args=[self.user.id])
         res = self.client.get(url)
         self.assertEqual(res.status_code, 200)
 
     def test_create_user_page(self):
-        """Test the create user page to work"""
+        """Test the create user page works"""
         url = reverse('admin:core_user_add')
         res = self.client.get(url)
         self.assertEqual(res.status_code, 200)
